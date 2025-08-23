@@ -239,7 +239,7 @@
                     <div class="pet-selection-screen">
                         <div class="header-section">
                             <div class="doppy-logo-small">
-                                <img src="/Doppy-main/Doppy-main/assets/images/logo.png" alt="">
+                                <img src="assets/images/logo.png" alt="">
                             </div>
                             <h2 class="screen-title">Choose your type of pet</h2>
                         </div>
@@ -247,17 +247,17 @@
                         <div class="selection-indicator" id="selectionIndicator">
                             <div class="selection-text">Selected:</div>
                             <div class="selected-pet-display">
-                                <span class="selected-pet-name" id="selectedPetName">None</span>
+ <span class="selected-pet-name" id="selectedPetName">None</span>
                             </div>
                         </div>
 
                         <div class="pets-grid">
                             <div class="pet-option" data-pet="cat" onclick="selectPet('cat', this)">
-                                <img src="/Doppy-main/Doppy-main/assets/images/cat icon.png" width="60" height="60">
+                                <img src="assets/images/cat icon.png" width="60" height="60">
                                 <div class="pet-name">Cat</div>
                             </div>
                             <div class="pet-option" data-pet="dog" onclick="selectPet('dog', this)">
-                                <img src="/Doppy-main/doppy-main/assets/images/dog icon.png" width="60" height="60">
+                                <img src="assets/images/dog icon.png" width="60" height="60">
                                 <div class="pet-name">Dog</div>
                             </div>
                             <div class="pet-option" data-pet="turtle" onclick="selectPet('turtle', this)">
@@ -265,15 +265,15 @@
                                 <div class="pet-name">Turtle</div>
                             </div>
                             <div class="pet-option" data-pet="bird" onclick="selectPet('bird', this)">
-                                <img src="/Doppy-main/doppy-main/assets/images/bird icon.png" width="60" height="60">
+                                <img src="assets/images/bird icon.png" width="60" height="60">
                                 <div class="pet-name">Bird</div>
                             </div>
                             <div class="pet-option" data-pet="rabbit" onclick="selectPet('rabbit', this)">
-                                <img src="/Doppy-main/doppy-main/assets/images/rabbit icon.png" width="60" height="60">
+                                <img src="assets/images/rabbit icon.png" width="60" height="60">
                                 <div class="pet-name">Rabbit</div>
                             </div>
                             <div class="pet-option" data-pet="lizard" onclick="selectPet('lizard', this)">
-                                <img src="/Doppy-main/doppy-main/assets/images/lizard icon.png" width="60" height="60">
+                                <img src="assets/images/lizard icon.png" width="60" height="60">
                                 <div class="pet-name">Lizard</div>
                             </div>
                         </div>
@@ -363,12 +363,12 @@
 
         function getPetIcon(petType) {
             const images = {
-                cat: '/Doppy-main/doppy-main/assets/images/cat icon.png',
-                dog: '/Doppy-main/doppy-main/assets/images/dog icon.png',
-                turtle: '/Doppy-main/doppy-main/assets/images/turtle icon.png',
-                bird: '/Doppy-main/doppy-main/assets/images/bird icon.png',
-                rabbit: '/Doppy-main/doppy-main/assets/images/rabbit icon.png',
-                lizard: '/Doppy-main/doppy-main/assets/images/lizard icon.png'
+                cat: 'assets/images/cat icon.png',
+                dog: 'assets/images/dog icon.png',
+                turtle: 'assets/images/turtle icon.png',
+                bird: 'assets/images/bird icon.png',
+                rabbit: 'assets/images/rabbit icon.png',
+                lizard: 'assets/images/lizard icon.png'
             };
             return images[petType] || images.cat;
         }
