@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doppy - Pet Details</title>
+    <link rel="stylesheet" href="../phone-frame.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        /* Pet Details Screen */
+        .pet-details-screen {
+            height: calc(100% - 44px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+            padding: 20px 30px 20px 30px;
+            overflow-y: auto;
+            /* Scroll invisible */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        }
+
+        .pet-details-screen::-webkit-scrollbar { /* WebKit */
+            width: 0;
+            height: 0;
+        }
+
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            margin: 40px 0 20px 0;
+            animation: fadeInDown 0.8s ease-out;
+            position: relative;
+            z-index: 200;
+        }
+
+        .doppy-logo-small {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .screen-title {
+            color: white;
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+
+        /* Selected Pet Section */
+        .selected-pet-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+            animation: zoomIn 0.6s ease-out 0.2s both;
+            position: relative;
+            z-index: 200;
+        }
+
+        .selected-pet-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 15px 25px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .selected-pet-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .selected-pet-name {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            background: rgba(255,193,7,0.3);
+            padding: 6px 15px;
+            border-radius: 12px;
+        }
+
+        /* Pet Details Form Section */
+        .pet-form-section {
+            margin-bottom: 25px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+            position: relative;
+            z-index: 200;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            position: relative;
+            z-index: 300;
+            pointer-events: auto;
+        }
+
+        .form-input:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 5px 20px rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+
+        .form-input::placeholder {
+            color: rgba(51,51,51,0.6);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            position: relative;
+            z-index: 300;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .form-select:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 5px 20px rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Second Logo Section */
+        .second-logo-section {
+            text-align: center;
+            margin: 20px 0 15px 0;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+            position: relative;
+            z-index: 200;
+        }
+
+        .doppy-logo-second {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        /* Final Credentials Section */
+        .credentials-section {
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+            position: relative;
+            z-index: 200;
+        }
+
+        .credentials-title {
+            color: white;
+            font-size: 20px;
+            font-weight: 400;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .credentials-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            position: relative;
+            z-index: 300;
+            pointer-events: auto;
+        }
+
+        .credentials-input:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 5px 20px rgba(255,255,255,0.4);
+            transform: translateY(-2px);
+        }
+
+        .credentials-input::placeholder {
+            color: rgba(51,51,51,0.6);
+        }
+
+        /* Done Button */
+        .done-section {
+            margin-top: 20px;
+            animation: fadeInUp 0.8s ease-out 1s both;
+            position: relative;
+            z-index: 200;
+        }
+
+        .btn-done {
+            width: 100%;
+            background: #FFC107;
+            color: #1976D2;
+            border: none;
+            padding: 16px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 300;
+            pointer-events: auto;
+        }
+
+        .btn-done:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.6);
+        }
+
+        .btn-done:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-done.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Success Message */
+        .completion-message {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid rgba(76, 175, 80, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 200;
+        }
+
+        .completion-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .completion-message h3 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .completion-message p {
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-4px); }
+        }
+
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        @keyframes success {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Error States */
+        .input-error {
+            border: 2px solid #ff4444 !important;
+            background: rgba(255, 68, 68, 0.1) !important;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 14px;
+            margin-top: -8px;
+            margin-bottom: 8px;
+            margin-left: 5px;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .pet-details-screen {
+                padding: 15px 25px 15px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame-container">
+        <div class="phone-frame">
+            <div class="phone-screen">
+                <div class="phone-container">
+                    <div class="status-bar">
+                        <span class="status-left">9:41</span>
+                        <span class="status-right">🔋 100%</span>
+                    </div>
+
+                    <button class="nav-btn back-btn" onclick="goBack()">←</button>
+                    <button class="nav-btn help-btn" onclick="showHelp()">?</button>
+
+                    <div class="pet-details-screen">
+                        <!-- Header with Logo and Title -->
+                        <div class="header-section">
+                            <div class="doppy-logo-small">
+                                <img src="/Doppy-main/assets/images/logo.png" alt="">
+                            </div>
+                            <h2 class="screen-title">Pet selected:</h2>
+                        </div>
+
+                        <!-- Selected Pet Display -->
+                        <div class="selected-pet-section">
+                            <div class="selected-pet-display">
+                                <div class="selected-pet-icon" id="selectedPetIcon"><img src="/Doppy-main/assets/images/dog icon.png" alt="" width="50" height="50"></div>
+                                <div class="selected-pet-name" id="selectedPetName">Dog</div>
+                            </div>
+                        </div>
+
+                        <!-- Pet Details Form -->
+                        <div class="pet-form-section">
+                            <input type="text" class="form-input" placeholder="Pet's name" id="petName" autocomplete="off">
+                            <div class="error-message" id="petNameError">Please enter your pet's name</div>
+                            
+                            <input type="text" class="form-input" placeholder="Pet's age" id="petAge" autocomplete="off">
+                            <div class="error-message" id="petAgeError">Please enter your pet's age</div>
+                            
+                            <input type="text" class="form-input" placeholder="Pet's race" id="petRace" autocomplete="off">
+                            <div class="error-message" id="petRaceError">Please enter your pet's race/breed</div>
+                            
+                            <select class="form-select" id="petGender">
+                                <option value="">Pet's gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                            <div class="error-message" id="petGenderError">Please select your pet's gender</div>
+                        </div>
+
+                        <!-- Done Button -->
+                        <div class="done-section">
+                            <button class="btn-done" id="doneBtn" onclick="completeRegistration()">Done</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Pet Details page loaded');
+            initPetDetailsScreen();
+            setupFormHandling();
+            updateStatusTime();
+            setInterval(updateStatusTime, 60000);
+        });
+        
+
+        function initPetDetailsScreen() {
+            // Load selected pet data
+            const selectedPet = getUserData('selectedPet');
+            const userData = getUserData('userData');
+            
+            // Display selected pet 
+            if (selectedPet) {
+                const iconElement = document.getElementById('selectedPetIcon');
+                const nameElement = document.getElementById('selectedPetName');
+                if (iconElement) {
+                    iconElement.innerHTML = `<img src="${selectedPet.icon}" alt="${selectedPet.name || 'Pet'}" width="120" height="120">`;
+                }
+                if (nameElement) {
+                    nameElement.textContent = selectedPet.name || 'Pet';
+                }
+            }
+
+            // Pre-fill email if available
+            if (userData && userData.email) {
+                const emailInput = document.getElementById('userEmail');
+                if (emailInput) emailInput.value = userData.email;
+            }
+
+            // Update registration data
+            const registrationData = getUserData('registrationData') || {};
+            registrationData.currentStep = 'pet-details';
+            registrationData.petDetailsPageLoaded = new Date().toISOString();
+            saveUserData('registrationData', registrationData);
+        }
+
+        function setupFormHandling() {
+            const inputs = document.querySelectorAll('.form-input, .form-select, .credentials-input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateField(this);
+                });
+                input.addEventListener('input', function() {
+                    clearError(this);
+                });
+                input.addEventListener('change', function() {
+                    clearError(this);
+                });
+            });
+        }
+
+        function validateField(input) {
+            const value = input.value.trim();
+            const fieldId = input.id;
+            
+            clearError(input);
+            
+            if (!value) {
+                showFieldError(input);
+                return false;
+            }
+
+            if (fieldId === 'userEmail' && value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    showFieldError(input);
+                    return false;
+                }
+            }
+
+            if (fieldId === 'petAge' && value) {
+                const age = parseInt(value);
+                if (isNaN(age) || age < 0 || age > 30) {
+                    showFieldError(input);
+                    return false;
+                }
+            }
+
+            if (fieldId === 'userPassword' && value.length < 6) {
+                showFieldError(input);
+                return false;
+            }
+
+            return true;
+        }
+
+        function showFieldError(input) {
+            input.classList.add('input-error');
+            const errorElement = document.getElementById(input.id + 'Error');
+            if (errorElement) {
+                errorElement.classList.add('visible');
+            }
+        }
+
+        function clearError(input) {
+            input.classList.remove('input-error');
+            const errorElement = document.getElementById(input.id + 'Error');
+            if (errorElement) {
+                errorElement.classList.remove('visible');
+            }
+        }
+
+        function completeRegistration() {
+            console.log('Completing registration...');
+            const doneBtn = document.getElementById('doneBtn');
+            
+            // Validate all fields
+            const requiredFields = [
+                'petName', 'petAge', 'petRace', 'petGender'
+            ];
+            
+            let isValid = true;
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field && !validateField(field)) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                showNotification('Please fill in all required fields correctly', 'error');
+                return;
+            }
+
+            // Add loading state
+            doneBtn.classList.add('loading');
+            doneBtn.textContent = 'Completing registration...';
+
+            // Collect all data
+            const petDetails = {
+                name: document.getElementById('petName').value.trim(),
+                age: document.getElementById('petAge').value.trim(),
+                race: document.getElementById('petRace').value.trim(),
+                gender: document.getElementById('petGender').value
+            };
+
+            // Save complete registration data
+            const registrationData = getUserData('registrationData') || {};
+            const selectedPet = getUserData('selectedPet');
+            const userData = getUserData('userData');
+
+            const completeRegistration = {
+                user: userData,
+                pet: {
+                    type: selectedPet ? selectedPet.type : 'unknown',
+                    ...petDetails
+                },
+                registrationFlow: registrationData,
+                completedAt: new Date().toISOString(),
+                status: 'completed'
+            };
+
+            saveUserData('completeRegistration', completeRegistration);
+
+            // Add ripple effect
+            addRippleEffect(doneBtn);
+
+            // Show success sequence
+            setTimeout(() => {
+                doneBtn.style.animation = 'success 0.6s ease';
+                doneBtn.textContent = '✓ Registration Complete!';
+                doneBtn.style.background = '#4CAF50';
+                
+                const completionMessage = document.getElementById('completionMessage');
+                if (completionMessage) {
+                    completionMessage.classList.add('visible');
+                }
+                
+                showNotification('🎉 Welcome to Doppy! Registration completed successfully.', 'success');
+            }, 1000);
+
+            // Final success state
+            setTimeout(() => {
+                doneBtn.textContent = '🚀 Start Using Doppy';
+                doneBtn.style.background = '#FFC107';
+                doneBtn.classList.remove('loading');
+                
+                // In a real app, this would navigate to the main dashboard
+               doneBtn.onclick = () => {
+                window.location.href = 'user-dashboard.html';
+            };
+            }, 3000);
+        }
+
+        function addRippleEffect(button) {
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (rect.width / 2 - size / 2) + 'px';
+            ripple.style.top = (rect.height / 2 - size / 2) + 'px';
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255,255,255,0.3)';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.animation = 'ripple 0.6s linear';
+            ripple.style.pointerEvents = 'none';
+            
+            button.style.position = 'relative';
+            button.style.overflow = 'hidden';
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                if (ripple.parentNode) {
+                    ripple.parentNode.removeChild(ripple);
+                }
+            }, 600);
+        }
+
+        function showHelp() {
+            showNotification('Complete your pet details to finish registration!', 'info');
+        }
+
+        function goBack() {
+            console.log('Going back to pet selection');
+            window.location.href = 'pet-selection.html';
+        }
+
+        function updateStatusTime() {
+            const timeElement = document.querySelector('.status-left');
+            if (timeElement) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: false 
+                });
+                timeElement.textContent = timeString;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'error' ? '#ff4444' : type === 'success' ? '#4CAF50' : '#2196F3'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                z-index: 10000;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: fadeInDown 0.3s ease-out;
+                max-width: 320px;
+                text-align: center;
+                line-height: 1.4;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, type === 'success' ? 4000 : 3000);
+        }
+
+        function saveUserData(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+                console.log('Data saved:', key);
+                return true;
+            } catch (error) {
+                console.error('Error saving data:', error);
+                return false;
+            }
+        }
+
+        function getUserData(key) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            } catch (error) {
+                console.error('Error retrieving data:', error);
+                return null;
+            }
+        }
+
+        console.log('Doppy Pet Details Screen loaded successfully');
+    </script>
+</body>
+</html>

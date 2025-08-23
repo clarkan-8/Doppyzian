@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doppy - Settings</title>
+    <link rel="stylesheet" href="../phone-frame.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: linear-gradient(135deg, #1E88E5 0%, #1976D2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            z-index: 100;
+        }
+
+        .settings-screen {
+            height: calc(100% - 44px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .bg-circles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .bg-circle-1 {
+            width: 300px;
+            height: 300px;
+            bottom: -100px;
+            right: -80px;
+            background: rgba(30, 136, 229, 0.2);
+        }
+
+        .bg-circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            left: -100px;
+            background: rgba(30, 136, 229, 0.15);
+        }
+
+        .header-section {
+            padding: 20px 30px;
+            text-align: center;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .doppy-logo-small {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .screen-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        .content-section {
+            flex: 1;
+            background: rgba(255,255,255,0.95);
+            margin: 0 20px 20px 20px;
+            border-radius: 20px 20px 0 0;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .settings-content {
+            padding: 20px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-item:last-child {
+            border-bottom: none;
+        }
+
+        .section-item:hover {
+            background: #f9fafb;
+        }
+
+        .item-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .item-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .icon-blue { background: #dbeafe; }
+        .icon-green { background: #dcfce7; }
+        .icon-yellow { background: #fef3c7; }
+        .icon-purple { background: #e9d5ff; }
+        .icon-red { background: #fee2e2; }
+        .icon-gray { background: #f3f4f6; }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+
+        .item-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .item-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-arrow {
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #d1d5db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #1976D2;
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active::before {
+            transform: translateX(20px);
+        }
+
+        .badge {
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .badge-update {
+            background: #10b981;
+        }
+
+        .version-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .app-logo {
+            width: 60px;
+            height: 60px;
+            background: #1976D2;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            margin: 0 auto 12px auto;
+        }
+
+        .app-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .app-version {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .app-description {
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+
+        .user-profile-section {
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .profile-email {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .profile-btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .data-usage {
+            background: #f0f9ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .usage-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .usage-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1976D2;
+            flex: 1;
+        }
+
+        .usage-period {
+            font-size: 12px;
+            color: #0288d1;
+        }
+
+        .usage-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .usage-stat {
+            text-align: center;
+        }
+
+        .usage-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1976D2;
+            margin-bottom: 4px;
+        }
+
+        .usage-label {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .danger-zone {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .danger-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .danger-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #dc2626;
+        }
+
+        .danger-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #fecaca;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .danger-item:last-child {
+            border-bottom: none;
+        }
+
+        .danger-item:hover {
+            background: #fee2e2;
+            margin: 0 -16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .danger-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 4px;
+        }
+
+        .danger-item-desc {
+            font-size: 12px;
+            color: #b91c1c;
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-item.active {
+            color: #1976D2;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: inherit;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .content-section {
+                margin: 0 15px 15px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame-container">
+        <div class="phone-frame">
+            <div class="phone-screen">
+                <div class="phone-container">
+                    <div class="status-bar">
+                        <span class="status-left">9:41</span>
+                        <span class="status-right">🔋 100%</span>
+                    </div>
+
+                    <div class="bg-circles">
+                        <div class="bg-circle bg-circle-1"></div>
+                        <div class="bg-circle bg-circle-2"></div>
+                    </div>
+
+                    <div class="settings-screen">
+                        <div class="header-section">
+                            <div class="doppy-logo-small">
+                                <img src="/Doppy-main/Doppy-main/assets/images/logo.png" alt="">
+                            </div>
+                            <h2 class="screen-title">Profile</h2>
+                            <p class="subtitle">Manage your preferences</p>
+                        </div>
+
+                        <div class="content-section">
+                            <div class="settings-content">
+                                <div class="user-profile-section">
+                                    <div class="profile-header">
+                                        <div class="profile-avatar">👤</div>
+                                        <div class="profile-info">
+                                            <div class="profile-name" id="userName">Antonio Ramirez</div>
+                                            <div class="profile-email" id="userEmail">antonio@email.com</div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="data-usage">
+                                    <div class="usage-header">
+                                        <div class="usage-title">📊 Usage Statistics</div>
+                                        <div class="usage-period">This month</div>
+                                    </div>
+                                    <div class="usage-stats">
+                                        <div class="usage-stat">
+                                            <div class="usage-number">24</div>
+                                            <div class="usage-label">Appointments</div>
+                                        </div>
+                                        <div class="usage-stat">
+                                            <div class="usage-number">156</div>
+                                            <div class="usage-label">Reminders</div>
+                                        </div>
+                                        <div class="usage-stat">
+                                            <div class="usage-number">12</div>
+                                            <div class="usage-label">Health Records</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="section">
+                                    <div class="section-header">
+                                        🔔 Notifications
+                                    </div>
+                                    <div class="section-item" onclick="toggleSetting('pushNotifications')">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-blue">📱</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Push Notifications</div>
+                                                <div class="item-subtitle">Receive alerts on your device</div>
+                                            </div>
+                                        </div>
+                                        <div class="toggle-switch active" id="pushNotifications"></div>
+                                    </div>
+                                    <div class="section-item" onclick="toggleSetting('emailNotifications')">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-green">📧</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Email Notifications</div>
+                                                <div class="item-subtitle">Get updates via email</div>
+                                            </div>
+                                        </div>
+                                        <div class="toggle-switch" id="emailNotifications"></div>
+                                    </div>
+                                    <div class="section-item" onclick="notificationSettings()">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-purple">⚙️</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Notification Settings</div>
+                                                <div class="item-subtitle">Customize what you receive</div>
+                                            </div>
+                                        </div>
+                                        <div class="item-arrow">›</div>
+                                    </div>
+                                </div>
+
+                                <div class="section">
+                                    <div class="section-header">
+                                        🐾 Pet Care
+                                    </div>
+                                    <div class="section-item" onclick="reminderSettings()">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-yellow">⏰</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Reminder Settings</div>
+                                                <div class="item-subtitle">Feeding, medicine, appointments</div>
+                                            </div>
+                                        </div>
+                                        <div class="item-arrow">›</div>
+                                    </div>
+                                    <div class="section-item" onclick="healthTracking()">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-red">❤️</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Health Tracking</div>
+                                                <div class="item-subtitle">Monitor vital signs and symptoms</div>
+                                            </div>
+                                        </div>
+                                        <div class="item-arrow">›</div>
+                                    </div>
+                                    <div class="section-item" onclick="vetIntegration()">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-blue">🏥</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Veterinary Integration</div>
+                                                <div class="item-subtitle">Connect with your vet clinic</div>
+                                            </div>
+                                        </div>
+                                        <div class="item-arrow">›</div>
+                                    </div>
+                                </div>
+
+                                <div class="section">
+                                    <div class="section-header">
+                                        🔐 Privacy & Security
+                                    </div>
+                                    <div class="section-item" onclick="privacySettings()">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-gray">🔒</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Privacy Settings</div>
+                                                <div class="item-subtitle">Control your data sharing</div>
+                                            </div>
+                                        </div>
+                                        <div class="item-arrow">›</div>
+                                    </div>
+                                    <div class="section-item" onclick="toggleSetting('biometricAuth')">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-purple">👆</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Biometric Authentication</div>
+                                                <div class="item-subtitle">Use fingerprint or face ID</div>
+                                            </div>
+                                        </div>
+                                        <div class="toggle-switch active" id="biometricAuth"></div>
+                                    </div>
+                                    <div class="section-item" onclick="dataExport()">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-blue">📤</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Export Data</div>
+                                                <div class="item-subtitle">Download your pet's information</div>
+                                            </div>
+                                        </div>
+                                        <div class="item-arrow">›</div>
+                                    </div>
+                                </div>
+
+                                <div class="section">
+                                    <div class="section-header">
+                                        ℹ️ Support & About
+                                    </div>
+                                    <div class="section-item" onclick="helpCenter()">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-green">❓</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Help Center</div>
+                                                <div class="item-subtitle">FAQs and support articles</div>
+                                            </div>
+                                        </div>
+                                        <div class="item-arrow">›</div>
+                                    </div>
+                                    <div class="section-item" onclick="contactSupport()">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-blue">💬</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Contact Support</div>
+                                                <div class="item-subtitle">Get help from our team</div>
+                                            </div>
+                                        </div>
+                                        <div class="item-arrow">›</div>
+                                    </div>
+                                    <div class="section-item" onclick="checkUpdates()">
+                                        <div class="item-content">
+                                            <div class="item-icon icon-purple">🔄</div>
+                                            <div class="item-details">
+                                                <div class="item-title">Check for Updates</div>
+                                                <div class="item-subtitle">Keep Doppy up to date</div>
+                                            </div>
+                                        </div>
+                                        <div class="badge badge-update">1</div>
+                                        <div class="item-arrow">›</div>
+                                    </div>
+                                </div>
+
+                                <div class="version-info">
+                                    <div class="app-name">Doppy</div>
+                                    <div class="app-version">Version 2.1.0</div>
+                                    <div class="app-description">Your pet's best care companion</div>
+                                </div>
+                                <div img src="/Doppy-main/Doppy-main/assets/images/Doppy Logo Ideas.png" alt="" width="100" height="100"></div>
+                                <div class="danger-zone">
+                                    <div class="danger-header">
+                                        <span>⚠️</span>
+                                        <div class="danger-title">Danger Zone</div>
+                                    </div>
+                                    <div class="danger-item" onclick="resetApp()">
+                                        <div class="danger-item-title">Reset App Data</div>
+                                        <div class="danger-item-desc">Clear all data and start fresh</div>
+                                    </div>
+                                    <div class="danger-item" onclick="deleteAccount()">
+                                        <div class="danger-item-title">Delete Account</div>
+                                        <div class="danger-item-desc">Permanently delete your account and data</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                            <div class="bottom-nav">
+                    <div class="nav-item" onclick="selectNav('home.html')">
+                        <img src="/Doppy-main/Doppy-main/assets/images/Home_Doppyuser.png" alt="">
+                    </div>
+                    <div class="nav-item" onclick="selectNav('notifications')">
+                        <img src="/Doppy-main/Doppy-main/assets/images/Notification_doppyuser.png" alt="">
+                    </div>
+                    <div class="nav-item" onclick="selectNav('schedule')">
+                    <img src="/Doppy-main/Doppy-main/assets/images/Calendar_doppyuser.png" alt="">
+                    </div>
+                    <div class="nav-item" onclick="selectNav('profile')">
+                        <img src="/Doppy-main/Doppy-main/assets/images/Pets_doppyuser.png" alt="">
+                    </div>
+                    <div class="nav-item active" onclick="selectNav('settings')">
+                    <img src="/Doppy-main/Doppy-main/assets/images/profile-user.png" alt="">
+                    </div>
+                </div>
+            </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initSettings();
+            loadUserProfile();
+            updateStatusTime();
+            setInterval(updateStatusTime, 60000);
+        });
+
+        function initSettings() {
+            console.log('Settings page loaded');
+            loadSettings();
+        }
+
+        function loadUserProfile() {
+            // Load user data from registration
+            const userData = getUserData('userData');
+            const completeRegistration = getUserData('completeRegistration');
+            
+            if (completeRegistration && completeRegistration.user) {
+                const user = completeRegistration.user;
+                if (user.fullName) document.getElementById('userName').textContent = user.fullName;
+                if (user.email) document.getElementById('userEmail').textContent = user.email;
+            } else if (userData) {
+                if (userData.fullName) document.getElementById('userName').textContent = userData.fullName;
+                if (userData.email) document.getElementById('userEmail').textContent = userData.email;
+            }
+        }
+
+        function loadSettings() {
+            // Load saved settings from localStorage
+            const settings = getUserData('appSettings') || {
+                pushNotifications: true,
+                emailNotifications: false,
+                biometricAuth: true
+            };
+            
+            // Apply settings to toggles
+            Object.keys(settings).forEach(key => {
+                const toggle = document.getElementById(key);
+                if (toggle) {
+                    if (settings[key]) {
+                        toggle.classList.add('active');
+                    } else {
+                        toggle.classList.remove('active');
+                    }
+                }
+            });
+        }
+
+        function toggleSetting(settingName) {
+            const toggle = document.getElementById(settingName);
+            if (toggle) {
+                toggle.classList.toggle('active');
+                const isActive = toggle.classList.contains('active');
+                
+                // Save setting
+                const settings = getUserData('appSettings') || {};
+                settings[settingName] = isActive;
+                saveUserData('appSettings', settings);
+                
+                showNotification(`${getSettingDisplayName(settingName)} ${isActive ? 'enabled' : 'disabled'}`, 'info');
+            }
+        }
+
+        function getSettingDisplayName(settingName) {
+            const names = {
+                pushNotifications: 'Push Notifications',
+                emailNotifications: 'Email Notifications',
+                biometricAuth: 'Biometric Authentication'
+            };
+            return names[settingName] || settingName;
+        }
+
+        function editProfile() {
+            showNotification('Opening profile editor...', 'info');
+        }
+
+        function viewSubscription() {
+            showNotification('Opening premium subscription options...', 'info');
+        }
+
+        function notificationSettings() {
+            showNotification('Opening detailed notification settings...', 'info');
+        }
+
+        function reminderSettings() {
+            showNotification('Opening reminder configuration...', 'info');
+        }
+
+        function healthTracking() {
+            showNotification('Opening health tracking settings...', 'info');
+        }
+
+        function vetIntegration() {
+            showNotification('Opening veterinary integration setup...', 'info');
+        }
+
+        function privacySettings() {
+            showNotification('Opening privacy and data settings...', 'info');
+        }
+
+        function dataExport() {
+            showNotification('Preparing data export...', 'info');
+        }
+
+        function helpCenter() {
+            showNotification('Opening help center...', 'info');
+        }
+
+        function contactSupport() {
+            showNotification('Opening support contact options...', 'info');
+        }
+
+        function checkUpdates() {
+            showNotification('Checking for app updates...', 'info');
+            setTimeout(() => {
+                showNotification('App is up to date!', 'success');
+            }, 2000);
+        }
+
+        function resetApp() {
+            if (confirm('Are you sure you want to reset all app data? This action cannot be undone.')) {
+                localStorage.clear();
+                showNotification('App data has been reset', 'success');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+        }
+
+        function deleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data.')) {
+                if (confirm('This is your final warning. Delete account permanently?')) {
+                    localStorage.clear();
+                    showNotification('Account deleted successfully', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                }
+            }
+        }
+
+        function selectNav(section) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            switch(section) {
+                case 'home':
+                    showNotification('Going to home...', 'info');
+                    break;
+                case 'notifications':
+                    window.location.href = 'notifications.html';
+                    break;
+                case 'schedule':
+                    window.location.href = 'pet-schedule.html';
+                    break;
+                case 'profile':
+                    window.location.href = 'pet-profile.html';
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function goBack() {
+            showNotification('Going back...', 'info');
+        }
+
+        function showHelp() {
+            showNotification('Settings help: Customize your Doppy experience, manage notifications, privacy, and account settings', 'info');
+        }
+
+        function updateStatusTime() {
+            const timeElement = document.querySelector('.status-left');
+            if (timeElement) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: false 
+                });
+                timeElement.textContent = timeString;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                max-width: 320px;
+                text-align: center;
+                line-height: 1.4;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        function saveUserData(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+                return true;
+            } catch (error) {
+                console.error('Error saving data:', error);
+                return false;
+            }
+        }
+
+        function getUserData(key) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            } catch (error) {
+                console.error('Error retrieving data:', error);
+                return null;
+            }
+        }
+
+        console.log('Doppy Settings loaded successfully');
+    </script>
+</body>
+</html>

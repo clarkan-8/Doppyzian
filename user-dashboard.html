@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doppy - Dashboard</title>
+    <link rel="stylesheet" href="../phone-frame.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: #f8fafc;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .phone-container {
+            width: 375px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 70px;
+}
+
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            background: white;
+            color: #1a1a1a;
+            font-size: 14px;
+            font-weight: 600;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            color: white;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-d {
+            width: 32px;
+            height: 32px;
+            background: #FFC107;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1976D2;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 400;
+            color: white;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .notification-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+        }
+
+        .welcome-section {
+            margin-bottom: 20px;
+        }
+
+        .welcome-text {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .user-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .pet-summary {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pet-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .pet-info {
+            flex: 1;
+        }
+
+        .pet-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .pet-details {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 70px;
+        }
+
+        .quick-actions {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .action-card:hover {
+            background: #f9fafb;
+            border-color: #1976D2;
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            background: #e3f2fd;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .action-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .action-subtitle {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .appointments-section {
+            padding: 0 20px 20px 20px;
+        }
+
+        .appointment-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .appointment-card:hover {
+            border-color: #1976D2;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.1);
+        }
+
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .appointment-time {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1976D2;
+            margin-bottom: 4px;
+        }
+
+        .appointment-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .appointment-clinic {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .appointment-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .status-upcoming {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .status-confirmed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .health-summary {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 16px;
+            margin: 0 20px 20px 20px;
+        }
+
+        .health-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .health-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .view-all-btn {
+            font-size: 14px;
+            color: #1976D2;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .health-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .health-stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1976D2;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+.bottom-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 20px;
+    z-index: 100;
+}
+/* ...existing code... */
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-item.active {
+            color: #1976D2;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: inherit;
+        }
+
+        .add-btn {
+            position: absolute;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #1976D2;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3);
+            transition: all 0.2s ease;
+            color: white;
+            font-size: 24px;
+            font-weight: 300;
+        }
+
+        .add-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+        }
+
+        @media (max-width: 480px) {
+            .phone-container {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame-container">
+        <div class="phone-frame">
+            <div class="phone-screen">
+                <div class="phone-container">
+                    <div class="status-bar">
+                        <span class="status-left">9:41</span>
+                        <span class="status-right">🔋 100%</span>
+                    </div>
+
+                    <div class="header">
+                        <div class="header-top">
+                            <div class="logo-section">
+                        <img src="/Doppy-main/assets/images/logo.png" alt="">
+                            </div>
+                            
+                            
+                            </button>
+                        </div>
+
+                        <div class="welcome-section">
+                            <div class="welcome-text">Good morning!</div>
+                            <div class="user-name" id="userName">John Doe</div>
+                            
+                            <div class="pet-summary" onclick="viewPetProfile()">
+                               
+                                <div class="pet-info">
+                                    <div class="pet-name" id="petName">Bruno</div>
+                                    <div class="pet-details" id="petDetails">Golden Retriever • 3 years old</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content">
+                        <div class="quick-actions">
+                            <div class="section-title">
+                                ⚡ Quick Actions
+                            </div>
+                            <div class="actions-grid">
+                                <div class="action-card" onclick="bookAppointment()">
+                                    <div class="action-icon">📅</div>
+                                    <div class="action-title">Book Appointment</div>
+                                    <div class="action-subtitle">Schedule vet visit</div>
+                                </div>
+                                <div class="action-card" onclick="emergencyCall()">
+                                    <div class="action-icon">🚨</div>
+                                    <div class="action-title">Emergency</div>
+                                    <div class="action-subtitle">24/7 vet support</div>
+                                </div>
+                                <div class="action-card" onclick="viewHealthRecords()">
+                                    <div class="action-icon">📋</div>
+                                    <div class="action-title">Health Records</div>
+                                    <div class="action-subtitle">Medical history</div>
+                                </div>
+                                <div class="action-card" onclick="findVets()">
+                                    <div class="action-icon">🏥</div>
+                                    <div class="action-title">Find Vets</div>
+                                    <div class="action-subtitle">Nearby clinics</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="appointments-section">
+                            <div class="section-title">
+                                📅 Upcoming Appointments
+                            </div>
+                            
+                            <div class="appointment-card" onclick="viewAppointment('apt1')">
+                                <div class="appointment-header">
+                                    <div>
+                                        <div class="appointment-time">Today, 2:30 PM</div>
+                                        <div class="appointment-title">Regular Checkup</div>
+                                        <div class="appointment-clinic">Happy Pets Veterinary Clinic</div>
+                                    </div>
+                                    <div class="appointment-status status-confirmed">Confirmed</div>
+                                </div>
+                            </div>
+
+                            <div class="appointment-card" onclick="viewAppointment('apt2')">
+                                <div class="appointment-header">
+                                    <div>
+                                        <div class="appointment-time">Jan 25, 10:00 AM</div>
+                                        <div class="appointment-title">Vaccination</div>
+                                        <div class="appointment-clinic">Pet Care Center</div>
+                                    </div>
+                                    <div class="appointment-status status-upcoming">Upcoming</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="health-summary">
+                            <div class="health-header">
+                                <div class="health-title">Health Summary</div>
+                                <button class="view-all-btn" onclick="viewFullHealth()">View All</button>
+                            </div>
+                            <div class="health-stats">
+                                <div class="health-stat">
+                                    <div class="stat-value">98%</div>
+                                    <div class="stat-label">Health Score</div>
+                                </div>
+                                <div class="health-stat">
+                                    <div class="stat-value">28kg</div>
+                                    <div class="stat-label">Weight</div>
+                                </div>
+                                <div class="health-stat">
+                                    <div class="stat-value">Up to date</div>
+                                    <div class="stat-label">Vaccinations</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  <div class="bottom-nav">
+    <div class="nav-item" onclick="window.location.href='user-dashboard.html'">
+        <img src="/Doppy-main/Doppy-main/assets/images/Home_Doppyuser.png" alt="">
+    </div>
+    <div class="nav-item" onclick="window.location.href='notifications.html'">
+        <img src="/Doppy-main/Doppy-main/assets/images/Notification_doppyuser.png" alt="">
+    </div>
+    <div class="nav-item" onclick="window.location.href='schedule.html'">
+        <img src="/Doppy-main/Doppy-main/assets/images/Calendar_doppyuser.png" alt="">
+    </div>
+    <div class="nav-item" onclick="window.location.href='pet-profile.html'">
+        <img src="/Doppy-main/Doppy-main/assets/images/Pets_doppyuser.png" alt="">
+    </div>
+    <div class="nav-item active" onclick="window.location.href='settings.html'">
+        <img src="/Doppy-main/Doppy-main/assets/images/profile-user.png" alt="">
+    </div>
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initDashboard();
+            updateStatusTime();
+            setInterval(updateStatusTime, 60000);
+        });
+
+        function initDashboard() {
+            console.log('User Dashboard loaded');
+            
+            // Load user and pet data
+            const userData = getUserData('userData');
+            const petData = getUserData('selectedPet');
+            const completeRegistration = getUserData('completeRegistration');
+            
+            // Display user name
+            if (userData && userData.fullName) {
+                document.getElementById('userName').textContent = userData.fullName;
+            } else if (completeRegistration && completeRegistration.user && completeRegistration.user.fullName) {
+                document.getElementById('userName').textContent = completeRegistration.user.fullName;
+            }
+            
+            // Display pet information
+            if (petData) {
+                document.getElementById('petAvatar').textContent = petData.icon || '🐾';
+                document.getElementById('petName').textContent = petData.name || 'Pet';
+            }
+            
+            if (completeRegistration && completeRegistration.pet) {
+                const pet = completeRegistration.pet;
+                document.getElementById('petName').textContent = pet.name || 'Pet';
+                document.getElementById('petDetails').textContent = 
+                    `${pet.race || pet.type} • ${pet.age || 'Unknown age'}`;
+            }
+            
+            updateGreeting();
+        }
+
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            let greeting = 'Good morning!';
+            
+            if (hour >= 12 && hour < 18) {
+                greeting = 'Good afternoon!';
+            } else if (hour >= 18) {
+                greeting = 'Good evening!';
+            }
+            
+            document.querySelector('.welcome-text').textContent = greeting;
+        }
+
+        function showNotifications() {
+            showNotification('You have 2 new messages and 1 appointment reminder', 'info');
+        }
+
+        function viewPetProfile() {
+            window.location.href = '/Doppy-main/User-pages/pet-profile.html';
+            // In a real app, this would open the pet profile page
+        }
+
+        function bookAppointment() {
+            showNotification('Opening appointment booking...', 'info');
+            // In a real app, this would open the appointment booking flow
+        }
+
+        function emergencyCall() {
+            showNotification('Connecting to emergency vet services...', 'info');
+            // In a real app, this would initiate emergency contact
+        }
+
+        function viewHealthRecords() {
+            showNotification('Opening health records...', 'info');
+            // In a real app, this would show medical history
+        }
+
+        function findVets() {
+            showNotification('Finding nearby veterinary clinics...', 'info');
+            // In a real app, this would show a map or list of nearby vets
+        }
+
+        function viewAppointment(appointmentId) {
+            showNotification(`Opening appointment details for ${appointmentId}...`, 'info');
+            // In a real app, this would show appointment details
+        }
+
+        function viewFullHealth() {
+            showNotification('Opening complete health dashboard...', 'info');
+            // In a real app, this would show detailed health metrics
+        }
+
+        function quickAdd() {
+            showNotification('Quick add: Appointment, Medication, or Note?', 'info');
+            // In a real app, this would show quick add options
+        }
+
+        function selectNav(section) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            event.currentTarget.classList.add('active');
+            
+            switch(section) {
+                case 'appointments':
+                    showNotification('Appointments section coming soon!', 'info');
+                    break;
+                case 'health':
+                    showNotification('Health tracking coming soon!', 'info');
+                    break;
+                case 'documents':
+                    showNotification('Documents section coming soon!', 'info');
+                    break;
+                case 'profile':
+                    window.location.href = 'user-profile.html';
+                    break;
+                default:
+                    // Stay on home
+                    break;
+            }
+        }
+
+        function updateStatusTime() {
+            const timeElement = document.querySelector('.status-left');
+            if (timeElement) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: false 
+                });
+                timeElement.textContent = timeString;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                max-width: 320px;
+                text-align: center;
+                line-height: 1.4;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        function saveUserData(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+                return true;
+            } catch (error) {
+                console.error('Error saving data:', error);
+                return false;
+            }
+        }
+
+        function getUserData(key) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            } catch (error) {
+                console.error('Error retrieving data:', error);
+                return null;
+            }
+        }
+
+        console.log('Doppy User Dashboard loaded successfully');
+    </script>
+</body>
+</html>
