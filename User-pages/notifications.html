@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doppy - Notifications</title>
+    <link rel="stylesheet" href="../phone-frame.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: linear-gradient(135deg, #1E88E5 0%, #1976D2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            z-index: 100;
+        }
+
+        .notifications-screen {
+            height: calc(100% - 44px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .bg-circles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .bg-circle-1 {
+            width: 300px;
+            height: 300px;
+            bottom: -100px;
+            right: -80px;
+            background: rgba(30, 136, 229, 0.2);
+        }
+
+        .bg-circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            left: -100px;
+            background: rgba(30, 136, 229, 0.15);
+        }
+
+        .header-section {
+            padding: 20px 30px;
+            text-align: center;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .doppy-logo-small {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .screen-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        .content-section {
+            flex: 1;
+            background: rgba(255,255,255,0.95);
+            margin: 0 20px 20px 20px;
+            border-radius: 20px 20px 0 0;
+            overflow: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .tabs-section {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #1976D2;
+            border-bottom-color: #1976D2;
+            background: #f8fafc;
+        }
+
+        .notifications-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .notification-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .notification-item:hover {
+            border-color: #1976D2;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.1);
+        }
+
+        .notification-item.unread {
+            border-left: 4px solid #1976D2;
+            background: #f8fafc;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 12px;
+        }
+
+        .icon-health { background: #dcfce7; }
+        .icon-appointment { background: #dbeafe; }
+        .icon-reminder { background: #fef3c7; }
+        .icon-system { background: #f3e8ff; }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #1976D2;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .unread-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+        }
+
+        .no-notifications {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .no-notifications-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .no-notifications-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .no-notifications-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .clear-all-btn {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 16px 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        .btn-clear {
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-clear:hover {
+            background: #fecaca;
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-item.active {
+            color: #1976D2;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: inherit;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .content-section {
+                margin: 0 15px 15px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame-container">
+        <div class="phone-frame">
+            <div class="phone-screen">
+                <div class="phone-container">
+                    <div class="status-bar">
+                        <span class="status-left">9:41</span>
+                        <span class="status-right">🔋 100%</span>
+                    </div>
+
+                   
+
+                    <div class="bg-circles">
+                        <div class="bg-circle bg-circle-1"></div>
+                        <div class="bg-circle bg-circle-2"></div>
+                    </div>
+
+                    <div class="notifications-screen">
+                        <div class="header-section">
+                            <div class="doppy-logo-small">
+                            <img src="/Doppy-main/Doppy-main/assets/images/logo.png" alt="">
+                            </div>
+                            <h2 class="screen-title">Notifications</h2>
+                            <p class="subtitle">Stay updated with your pet's care</p>
+                        </div>
+
+                        <div class="content-section">
+                            <div class="tabs-section">
+                                <div class="tab active" onclick="switchTab('all')">All</div>
+                                <div class="tab" onclick="switchTab('health')">Health</div>
+                                <div class="tab" onclick="switchTab('appointments')">Appointments</div>
+                                <div class="tab" onclick="switchTab('reminders')">Reminders</div>
+                            </div>
+
+                            <div class="notifications-content" id="notificationsContent">
+                                <div class="notification-item unread" onclick="openNotification('n1')">
+                                    <div class="unread-badge"></div>
+                                    <div class="notification-header">
+                                        <div style="display: flex; align-items: center;">
+                                            <div class="notification-icon icon-health">🏥</div>
+                                            <div class="notification-content">
+                                                <div class="notification-title">Vaccination Reminder</div>
+                                                <div class="notification-message">Luna's annual vaccination is due next week. Schedule an appointment with your veterinarian.</div>
+                                                <div class="notification-time">2 hours ago</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="action-btn btn-primary" onclick="scheduleAppointment()">Schedule</button>
+                                        <button class="action-btn btn-secondary" onclick="markAsRead('n1')">Mark as Read</button>
+                                    </div>
+                                </div>
+
+                                <div class="notification-item unread" onclick="openNotification('n2')">
+                                    <div class="unread-badge"></div>
+                                    <div class="notification-header">
+                                        <div style="display: flex; align-items: center;">
+                                            <div class="notification-icon icon-appointment">📅</div>
+                                            <div class="notification-content">
+                                                <div class="notification-title">Appointment Confirmed</div>
+                                                <div class="notification-message">Your appointment for Luna at Happy Pets Clinic has been confirmed for tomorrow at 2:00 PM.</div>
+                                                <div class="notification-time">5 hours ago</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="action-btn btn-primary" onclick="viewAppointment()">View Details</button>
+                                        <button class="action-btn btn-secondary" onclick="markAsRead('n2')">Dismiss</button>
+                                    </div>
+                                </div>
+
+                                <div class="notification-item" onclick="openNotification('n3')">
+                                    <div class="notification-header">
+                                        <div style="display: flex; align-items: center;">
+                                            <div class="notification-icon icon-reminder">⏰</div>
+                                            <div class="notification-content">
+                                                <div class="notification-title">Feeding Time</div>
+                                                <div class="notification-message">Time for Luna's evening meal! Don't forget her vitamins.</div>
+                                                <div class="notification-time">1 day ago</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="notification-item" onclick="openNotification('n4')">
+                                    <div class="notification-header">
+                                        <div style="display: flex; align-items: center;">
+                                            <div class="notification-icon icon-health">💊</div>
+                                            <div class="notification-content">
+                                                <div class="notification-title">Medication Reminder</div>
+                                                <div class="notification-message">Luna's heart medication is running low. Order a refill soon.</div>
+                                                <div class="notification-time">2 days ago</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="action-btn btn-primary" onclick="orderMedication()">Order Refill</button>
+                                    </div>
+                                </div>
+
+                                <div class="notification-item" onclick="openNotification('n5')">
+                                    <div class="notification-header">
+                                        <div style="display: flex; align-items: center;">
+                                            <div class="notification-icon icon-system">⚙️</div>
+                                            <div class="notification-content">
+                                                <div class="notification-title">App Update Available</div>
+                                                <div class="notification-message">Doppy v2.1.0 is now available with new features and improvements.</div>
+                                                <div class="notification-time">3 days ago</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="action-btn btn-primary" onclick="updateApp()">Update Now</button>
+                                    </div>
+                                </div>
+
+                                <div class="notification-item" onclick="openNotification('n6')">
+                                    <div class="notification-header">
+                                        <div style="display: flex; align-items: center;">
+                                            <div class="notification-icon icon-health">📊</div>
+                                            <div class="notification-content">
+                                                <div class="notification-title">Health Report Ready</div>
+                                                <div class="notification-message">Luna's monthly health report is ready for review.</div>
+                                                <div class="notification-time">1 week ago</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="action-btn btn-primary" onclick="viewReport()">View Report</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="clear-all-btn">
+                                <button class="btn-clear" onclick="clearAllNotifications()">Clear All Notifications</button>
+                            </div>
+                        </div>
+                    </div>
+
+                                      <div class="bottom-nav">
+                    <div class="nav-item" onclick="selectNav('home')">
+                        <img src="/Doppy-main/Doppy-main/assets/images/Home_Doppyuser.png" alt="">
+                    </div>
+                    <div class="nav-item" onclick="selectNav('notifications')">
+                        <img src="/Doppy-main/Doppy-main/assets/images/Notification_doppyuser.png" alt="">
+                    </div>
+                    <div class="nav-item" onclick="selectNav('schedule')">
+                    <img src="/Doppy-main/Doppy-main/assets/images/Calendar_doppyuser.png" alt="">
+                    </div>
+                    <div class="nav-item" onclick="selectNav('profile')">
+                        <img src="/Doppy-main/Doppy-main/assets/images/Pets_doppyuser.png" alt="">
+                    </div>
+                    <div class="nav-item active" onclick="selectNav('settings')">
+                    <img src="/Doppy-main/Doppy-main/assets/images/profile-user.png" alt="">
+                    </div>
+                </div>
+            </div>
+
+    <script>
+        let currentTab = 'all';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initNotifications();
+            updateStatusTime();
+            setInterval(updateStatusTime, 60000);
+        });
+
+        function initNotifications() {
+            console.log('Notifications page loaded');
+            updateNotificationCount();
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab appearance
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Filter notifications based on tab
+            filterNotifications(tab);
+        }
+
+        function filterNotifications(filter) {
+            const notifications = document.querySelectorAll('.notification-item');
+            
+            notifications.forEach(notification => {
+                let show = true;
+                
+                if (filter !== 'all') {
+                    const icon = notification.querySelector('.notification-icon');
+                    switch(filter) {
+                        case 'health':
+                            show = icon.classList.contains('icon-health');
+                            break;
+                        case 'appointments':
+                            show = icon.classList.contains('icon-appointment');
+                            break;
+                        case 'reminders':
+                            show = icon.classList.contains('icon-reminder');
+                            break;
+                    }
+                }
+                
+                notification.style.display = show ? 'block' : 'none';
+            });
+        }
+
+        function openNotification(notificationId) {
+            showNotification(`Opening notification ${notificationId}...`, 'info');
+            // In a real app, this would open the detailed notification view
+        }
+
+        function markAsRead(notificationId) {
+            event.stopPropagation();
+            const notification = document.querySelector(`[onclick="openNotification('${notificationId}')"]`);
+            if (notification) {
+                notification.classList.remove('unread');
+                const badge = notification.querySelector('.unread-badge');
+                if (badge) badge.remove();
+            }
+            updateNotificationCount();
+            showNotification('Marked as read', 'success');
+        }
+
+        function updateNotificationCount() {
+            const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+            console.log(`Unread notifications: ${unreadCount}`);
+        }
+
+        function scheduleAppointment() {
+            event.stopPropagation();
+            showNotification('Opening appointment scheduler...', 'info');
+        }
+
+        function viewAppointment() {
+            event.stopPropagation();
+            showNotification('Opening appointment details...', 'info');
+        }
+
+        function orderMedication() {
+            event.stopPropagation();
+            showNotification('Opening medication order form...', 'info');
+        }
+
+        function updateApp() {
+            event.stopPropagation();
+            showNotification('Starting app update...', 'info');
+        }
+
+        function viewReport() {
+            event.stopPropagation();
+            showNotification('Opening health report...', 'info');
+        }
+
+        function clearAllNotifications() {
+            if (confirm('Are you sure you want to clear all notifications?')) {
+                document.getElementById('notificationsContent').innerHTML = `
+                    <div class="no-notifications">
+                        <div class="no-notifications-icon">🔔</div>
+                        <div class="no-notifications-title">All caught up!</div>
+                        <div class="no-notifications-subtitle">No new notifications</div>
+                    </div>
+                `;
+                showNotification('All notifications cleared', 'success');
+            }
+        }
+
+        function selectNav(section) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            switch(section) {
+                case 'home':
+                    showNotification('Going to home...', 'info');
+                    break;
+                case 'schedule':
+                    window.location.href = 'pet-schedule.html';
+                    break;
+                case 'profile':
+                    window.location.href = 'pet-profile.html';
+                    break;
+                case 'settings':
+                    window.location.href = 'settings.html';
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function goBack() {
+            showNotification('Going back...', 'info');
+        }
+
+        function showHelp() {
+            showNotification('Notifications help: Manage your pet care alerts and reminders here', 'info');
+        }
+
+        function updateStatusTime() {
+            const timeElement = document.querySelector('.status-left');
+            if (timeElement) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: false 
+                });
+                timeElement.textContent = timeString;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                max-width: 320px;
+                text-align: center;
+                line-height: 1.4;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        console.log('Doppy Notifications loaded successfully');
+    </script>
+</body>
+</html>

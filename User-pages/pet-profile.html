@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doppy - Pet Profile</title>
+    <link rel="stylesheet" href="../phone-frame.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: linear-gradient(135deg, #1E88E5 0%, #1976D2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .status-bar {
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            z-index: 100;
+        }
+
+        .pet-profile-screen {
+            height: calc(100% - 44px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .bg-circles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .bg-circle-1 {
+            width: 300px;
+            height: 300px;
+            bottom: -100px;
+            right: -80px;
+            background: rgba(30, 136, 229, 0.2);
+        }
+
+        .bg-circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            left: -100px;
+            background: rgba(30, 136, 229, 0.15);
+        }
+
+        .header-section {
+            padding: 20px 30px;
+            text-align: center;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .doppy-logo-small {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .screen-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .content-section {
+            flex: 1;
+            background: rgba(255,255,255,0.95);
+            margin: 0 20px 20px 20px;
+            border-radius: 20px 20px 0 0;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .pet-header {
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .pet-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 4px solid rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 48px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pet-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .pet-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .pet-breed {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .pet-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .profile-sections {
+            padding: 20px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f9fafb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .item-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .health-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-healthy { background: #10b981; }
+        .status-warning { background: #f59e0b; }
+        .status-critical { background: #ef4444; }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            border-color: #1976D2;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.1);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            background: #f0f9ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 8px auto;
+        }
+
+        .action-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .action-subtitle {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .medical-records {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+        }
+
+        .record-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f9fafb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .record-item:last-child {
+            border-bottom: none;
+        }
+
+        .record-item:hover {
+            background: #f9fafb;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .record-type {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .record-date {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .record-details {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .care-tips {
+            background: #f0f9ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .tips-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tips-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1976D2;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tip-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .tip-bullet {
+            width: 6px;
+            height: 6px;
+            background: #1976D2;
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .tip-text {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .edit-profile-btn {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 16px 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        .btn-edit {
+            background: #1976D2;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .btn-edit:hover {
+            background: #1565C0;
+            transform: translateY(-2px);
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-item.active {
+            color: #1976D2;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: inherit;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .content-section {
+                margin: 0 15px 15px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame-container">
+        <div class="phone-frame">
+            <div class="phone-screen">
+                <div class="phone-container">
+                    <div class="status-bar">
+                        <span class="status-left">9:41</span>
+                        <span class="status-right">🔋 100%</span>
+                    </div>
+
+
+                    <div class="bg-circles">
+                        <div class="bg-circle bg-circle-1"></div>
+                        <div class="bg-circle bg-circle-2"></div>
+                    </div>
+
+                    <div class="pet-profile-screen">
+                        <div class="header-section">
+                            <div class="doppy-logo-small">
+                            <img src="/Doppy-main/Doppy-main/assets/images/logo.png" alt="">
+                            </div>
+                            <h2 class="screen-title">Your Pet Profile</h2>
+                        </div>
+
+                        <div class="content-section">
+                            <div class="pet-header">
+                                <div class="pet-avatar" onclick="changePetPhoto()"><img sr alt=""></div>
+                                <div class="pet-name" id="petName">Bruno</div>
+                                <div class="pet-breed" id="petBreed">Golden Retriever</div>
+                                
+                                <div class="pet-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-number">3</div>
+                                        <div class="stat-label">Years Old</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">28kg</div>
+                                        <div class="stat-label">Weight</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">98%</div>
+                                        <div class="stat-label">Health</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="profile-sections">
+                                <div class="quick-actions">
+                                    <div class="action-card" onclick="scheduleCheckup()">
+                                        <div class="action-icon">🏥</div>
+                                        <div class="action-title">Schedule Checkup</div>
+                                        <div class="action-subtitle">Book appointment</div>
+                                    </div>
+                                    <div class="action-card" onclick="viewVaccinations()">
+                                        <div class="action-icon">💉</div>
+                                        <div class="action-title">Vaccinations</div>
+                                        <div class="action-subtitle">View schedule</div>
+                                    </div>
+                                    <div class="action-card" onclick="setReminder()">
+                                        <div class="action-icon">⏰</div>
+                                        <div class="action-title">Set Reminder</div>
+                                        <div class="action-subtitle">Feeding, meds, etc.</div>
+                                    </div>
+                                    <div class="action-card" onclick="shareProfile()">
+                                        <div class="action-icon">📤</div>
+                                        <div class="action-title">Share Profile</div>
+                                        <div class="action-subtitle">With veterinarian</div>
+                                    </div>
+                                </div>
+
+                                <div class="section">
+                                    <div class="section-header">
+                                        📋 Basic Information
+                                    </div>
+                                    <div class="section-item">
+                                        <div class="item-label">Pet ID</div>
+                                        <div class="item-value">#PET-2024-001</div>
+                                    </div>
+                                    <div class="section-item">
+                                        <div class="item-label">Gender</div>
+                                        <div class="item-value">Male</div>
+                                    </div>
+                                    <div class="section-item">
+                                        <div class="item-label">Color</div>
+                                        <div class="item-value">Golden</div>
+                                    </div>
+                                    <div class="section-item">
+                                        <div class="item-label">Microchip ID</div>
+                                        <div class="item-value">985112001234567</div>
+                                    </div>
+                                    <div class="section-item">
+                                        <div class="item-label">Owner</div>
+                                        <div class="item-value">Antonio Ramirez</div>
+                                    </div>
+                                </div>
+
+                                <div class="section">
+                                    <div class="section-header">
+                                        🏥 Health Status
+                                    </div>
+                                    <div class="section-item">
+                                        <div class="item-label">Overall Health</div>
+                                        <div class="health-status">
+                                            <div class="status-indicator status-healthy"></div>
+                                            <div class="item-value">Excellent</div>
+                                        </div>
+                                    </div>
+                                    <div class="section-item">
+                                        <div class="item-label">Last Checkup</div>
+                                        <div class="item-value">3 days ago</div>
+                                    </div>
+                                    <div class="section-item">
+                                        <div class="item-label">Next Vaccination</div>
+                                        <div class="item-value">6 months</div>
+                                    </div>
+                                    <div class="section-item">
+                                        <div class="item-label">Current Medications</div>
+                                        <div class="item-value">None</div>
+                                    </div>
+                                    <div class="section-item">
+                                        <div class="item-label">Allergies</div>
+                                        <div class="item-value">Chicken, Dairy</div>
+                                    </div>
+                                </div>
+
+                                <div class="medical-records">
+                                    <div class="section-header">
+                                        📄 Recent Medical Records
+                                    </div>
+                                    <div class="record-item" onclick="viewRecord('r1')">
+                                        <div class="record-header">
+                                            <div class="record-type">Annual Checkup</div>
+                                            <div class="record-date">Jan 15, 2025</div>
+                                        </div>
+                                        <div class="record-details">Complete physical examination. All systems normal. Weight stable.</div>
+                                    </div>
+                                    <div class="record-item" onclick="viewRecord('r2')">
+                                        <div class="record-header">
+                                            <div class="record-type">Vaccination Update</div>
+                                            <div class="record-date">Jul 20, 2024</div>
+                                        </div>
+                                        <div class="record-details">Rabies and DHPP vaccines administered. No adverse reactions.</div>
+                                    </div>
+                                    <div class="record-item" onclick="viewRecord('r3')">
+                                        <div class="record-header">
+                                            <div class="record-type">Dental Cleaning</div>
+                                            <div class="record-date">Mar 10, 2024</div>
+                                        </div>
+                                        <div class="record-details">Professional dental cleaning completed. Mild tartar buildup removed.</div>
+                                    </div>
+                                </div>
+                                
+
+                                <div class="care-tips">
+                                    <div class="tips-header">
+                                        <span>💡</span>
+                                        <div class="tips-title">Care Tips for Bruno</div>
+                                    </div>
+                                    <div class="tip-item">
+                                        <div class="tip-bullet"></div>
+                                        <div class="tip-text">Golden Retrievers need 60-90 minutes of exercise daily</div>
+                                    </div>
+                                    <div class="tip-item">
+                                        <div class="tip-bullet"></div>
+                                        <div class="tip-text">Brush coat 2-3 times per week to prevent matting</div>
+                                    </div>
+                                    <div class="tip-item">
+                                        <div class="tip-bullet"></div>
+                                        <div class="tip-text">Monitor for hip dysplasia as they age</div>
+                                    </div>
+                                    <div class="tip-item">
+                                        <div class="tip-bullet"></div>
+                                        <div class="tip-text">Keep mentally stimulated with puzzle toys</div>
+                                    </div>
+                                </div>
+
+                             
+                            </div>
+                        </div>
+                    </div>
+                 <div class="bottom-nav">
+    <div class="nav-item" onclick="window.location.href='user-dashboard.html'">
+        <img src="/Doppy-main/Doppy-main/assets/images/Home_Doppyuser.png" alt="">
+    </div>
+    <div class="nav-item" onclick="window.location.href='notifications.html'">
+        <img src="/Doppy-main/Doppy-main/assets/images/Notification_doppyuser.png" alt="">
+    </div>
+    <div class="nav-item" onclick="window.location.href='schedule.html'">
+        <img src="/Doppy-main/Doppy-main/assets/images/Calendar_doppyuser.png" alt="">
+    </div>
+    <div class="nav-item" onclick="window.location.href='pet-profile.html'">
+        <img src="/Doppy-main/Doppy-main/assets/images/Pets_doppyuser.png" alt="">
+    </div>
+    <div class="nav-item active" onclick="window.location.href='settings.html'">
+        <img src="/Doppy-main/Doppy-main/assets/images/profile-user.png" alt="">
+    </div>
+</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initPetProfile();
+            loadPetData();
+            updateStatusTime();
+            setInterval(updateStatusTime, 60000);
+        });
+
+        function loadPetData() {
+            // In a real app, this would load from a server
+            const petData = {
+                name: 'Bruno',
+                breed: 'Golden Retriever',
+                age: '3 years',
+                weight: '28kg',
+                health: '98%',
+                id: '#PET-2024-001',
+                gender: 'Male',
+                color: 'Golden',
+                microchip: '985112001234567',
+                owner: 'Antonio Ramirez'
+            };
+            
+            console.log('Pet data loaded:', petData);
+        }
+
+        function changePetPhoto() {
+            showNotification('Photo selection coming soon!', 'info');
+        }
+
+        function scheduleCheckup() {
+            showNotification('Opening appointment scheduler...', 'info');
+        }
+
+        function viewVaccinations() {
+            showNotification('Opening vaccination schedule...', 'info');
+        }
+
+        function setReminder() {
+            showNotification('Opening reminder settings...', 'info');
+        }
+
+        function shareProfile() {
+            showNotification('Sharing profile with veterinarian...', 'info');
+        }
+
+        function viewRecord(recordId) {
+            showNotification(`Opening medical record ${recordId}...`, 'info');
+        }
+
+        function editProfile() {
+            showNotification('Opening profile editor...', 'info');
+        }
+
+        function selectNav(section) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            switch(section) {
+                case 'home':
+                    showNotification('Going to home...', 'info');
+                    break;
+                case 'notifications':
+                    window.location.href = 'notifications.html';
+                    break;
+                case 'schedule':
+                    window.location.href = 'pet-schedule.html';
+                    break;
+                case 'settings':
+                    window.location.href = 'settings.html';
+                    break;
+                default:
+                    break;
+            }
+        }
+function initPetProfile() {
+    console.log('Pet Profile page loaded');
+    // Load pet data from localStorage if available
+    const completeRegistration = getUserData('completeRegistration');
+    let petAvatar = null;
+    if (completeRegistration && completeRegistration.pet) {
+        const pet = completeRegistration.pet;
+        if (pet.name) document.getElementById('petName').textContent = pet.name;
+        if (pet.race) document.getElementById('petBreed').textContent = pet.race;
+        if (pet.icon) petAvatar = pet.icon;
+    }
+    if (!petAvatar) {
+        petAvatar = localStorage.getItem('petAvatar');
+    }
+    const avatarDiv = document.querySelector('.pet-avatar');
+    if (avatarDiv) {
+        if (petAvatar && petAvatar.startsWith('data:image')) {
+            avatarDiv.innerHTML = `<img src="${petAvatar}" style="width:100%;height:100%;border-radius:50%;">`;
+        } else if (petAvatar && petAvatar.startsWith('/')) {
+            avatarDiv.innerHTML = `<img src="${petAvatar}" style="width:100%;height:100%;border-radius:50%;">`;
+        } else if (petAvatar) {
+            avatarDiv.textContent = petAvatar; // Si es emoji
+        } else {
+            avatarDiv.textContent = '🐾'; // Default
+        }
+    }
+}
+        function goBack() {
+            showNotification('Going back...', 'info');
+        }
+
+        function showHelp() {
+            showNotification('Pet Profile help: View and manage your pet\'s information, health records, and care tips', 'info');
+        }
+
+        function updateStatusTime() {
+            const timeElement = document.querySelector('.status-left');
+            if (timeElement) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: false 
+                });
+                timeElement.textContent = timeString;
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-size: 14px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                max-width: 320px;
+                text-align: center;
+                line-height: 1.4;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        function getUserData(key) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : null;
+            } catch (error) {
+                console.error('Error retrieving data:', error);
+                return null;
+            }
+        }
+
+        console.log('Doppy Pet Profile loaded successfully');
+    </script>
+</body>
+</html>
